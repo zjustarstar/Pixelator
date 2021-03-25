@@ -10,127 +10,101 @@ def process001(img, outH, outW): #对轮廓区域进行处理
         Grid = h0/ outH
         if Grid < 40:
             pixel = Grid
-            h = int(pixel * outH)
-            w = int(pixel * outW)
+            h, w = int(pixel * outH), int(pixel * outW)
         elif 40<= Grid <80:
             pixel = int(Grid/2)
-            h = int(pixel * 2 * outH)
-            w = int(pixel * 2 * outW)
+            h, w = int(pixel * 2 * outH), int(pixel * 2 * outW)
         elif 80<= Grid <160:
             pixel = int(Grid/4)
-            h = int(pixel * 4 * outH)
-            w = int(pixel * 4 * outW)
+            h, w = int(pixel * 4 * outH), int(pixel * 4 * outW)
         elif 160<= Grid <320:
             pixel = int(Grid/8)
-            h = int(pixel * 8 * outH)
-            w = int(pixel * 4 * outW)
+            h, w = int(pixel * 8 * outH), int(pixel * 4 * outW)
 
     elif h0 == w0 and h0 % outH !=0: #正方形不整除关系
         Grid = int(h0 / outH) + 1 # 达到放大原图效果
         if Grid < 40:
             pixel = Grid
-            h = int(pixel * outH)
-            w = int(pixel * outW)
+            h, w = int(pixel * outH), int(pixel * outW)
         elif 40 <= Grid < 80:
             pixel = int(Grid / 2) +1
-            h = int(pixel * 2 * outH)
-            w = int(pixel * 2 * outW)
+            h, w = int(pixel * 2 * outH), int(pixel * 2 * outW)
         elif 80 <= Grid < 160:
             pixel = int(Grid / 4) +1
-            h = int(pixel * 4 * outH)
-            w = int(pixel * 4 * outW)
+            h, w = int(pixel * 4 * outH), int(pixel * 4 * outW)
         elif 160 <= Grid < 320:
             pixel = int(Grid / 8) +1
-            h = int(pixel * 8 * outH)
-            w = int(pixel * 4 * outW)
+            h, w = int(pixel * 8 * outH), int(pixel * 4 * outW)
 
     elif h0 != w0 and h0 % outH ==0 and w0 % outW ==0: #长方形整除关系
         if h0 > w0: #以短边计算Grid
             Grid = w0/ outW
             if Grid < 40:
                 pixel = Grid
-                h = int(pixel * outH)
-                w = int(pixel * outW)
+                h, w = int(pixel * outH), int(pixel * outW)
             elif 40<= Grid <80:
                 pixel = int(Grid/2)
-                h = int(pixel * 2 * outH)
-                w = int(pixel * 2 * outW)
+                h, w = int(pixel * 2 * outH), int(pixel * 2 * outW)
             elif 80<= Grid <160:
                 pixel = int(Grid/4)
-                h = int(pixel * 4 * outH)
-                w = int(pixel * 4 * outW)
+                h, w = int(pixel * 4 * outH), int(pixel * 4 * outW)
             elif 160<= Grid <320:
                 pixel = int(Grid/8)
-                h = int(pixel * 8 * outH)
-                w = int(pixel * 4 * outW)
-
+                h, w = int(pixel * 8 * outH), int(pixel * 4 * outW)
         elif h0 < w0: #以短边计算Grid
             Grid = h0/ outH
             if Grid < 40:
                 pixel = Grid
-                h = int(pixel * outH)
-                w = int(pixel * outW)
+                h, w = int(pixel * outH), int(pixel * outW)
             elif 40<= Grid <80:
                 pixel = int(Grid/2)
-                h = int(pixel * 2 * outH)
-                w = int(pixel * 2 * outW)
+                h, w = int(pixel * 2 * outH), int(pixel * 2 * outW)
             elif 80<= Grid <160:
                 pixel = int(Grid/4)
-                h = int(pixel * 4 * outH)
-                w = int(pixel * 4 * outW)
+                h, w = int(pixel * 4 * outH), int(pixel * 4 * outW)
             elif 160<= Grid <320:
                 pixel = int(Grid/8)
-                h = int(pixel * 8 * outH)
-                w = int(pixel * 4 * outW)
+                h, w = int(pixel * 8 * outH), int(pixel * 4 * outW)
 
     elif h0 != w0 and h0 % outH !=0 or w0 % outW !=0: #长方形不能整除关系
         if h0 > w0:  # 以短边计算Grid
             Grid = int(w0 / outW) +1
             if Grid < 40:
                 pixel = Grid
-                h = int(pixel * outH)
-                w = int(pixel * outW)
+                h, w = int(pixel * outH), int(pixel * outW)
             elif 40 <= Grid < 80:
                 pixel = int(Grid / 2) +1
-                h = int(pixel * 2 * outH)
-                w = int(pixel * 2 * outW)
+                h, w = int(pixel * 2 * outH), int(pixel * 2 * outW)
             elif 80 <= Grid < 160:
                 pixel = int(Grid / 4) +1
-                h = int(pixel * 4 * outH)
-                w = int(pixel * 4 * outW)
+                h, w = int(pixel * 4 * outH), int(pixel * 4 * outW)
             elif 160 <= Grid < 320:
                 pixel = int(Grid / 8) +1
-                h = int(pixel * 8 * outH)
-                w = int(pixel * 4 * outW)
-
+                h, w = int(pixel * 8 * outH), int(pixel * 4 * outW)
         elif h0 < w0:  # 以短边计算Grid
             Grid = int(h0 / outH) +1
             if Grid < 40:
                 pixel = Grid
-                h = int(pixel * outH)
-                w = int(pixel * outW)
+                h, w = int(pixel * outH), int(pixel * outW)
             elif 40 <= Grid < 80:
                 pixel = int(Grid / 2) +1
-                h = int(pixel * 2 * outH)
-                w = int(pixel * 2 * outW)
+                h, w = int(pixel * 2 * outH), int(pixel * 2 * outW)
             elif 80 <= Grid < 160:
                 pixel = int(Grid / 4) +1
-                h = int(pixel * 4 * outH)
-                w = int(pixel * 4 * outW)
+                h, w = int(pixel * 4 * outH), int(pixel * 4 * outW)
             elif 160 <= Grid < 320:
                 pixel = int(Grid / 8) +1
-                h = int(pixel * 8 * outH)
-                w = int(pixel * 4 * outW)
+                h, w = int(pixel * 8 * outH), int(pixel * 4 * outW)
 
     reimage = cv2.resize(image, (w, h))
     row = int(h / pixel)
     col = int(w / pixel)
+
     # 用于保存最终的目标像素图
     final_pixelImg = np.ones([row, col], np.uint8) * 255
 
     #以上是对原图进行格子划分，确定格子分辨率，和将原图划分为几行几列
     #以下是对每个格子进行处理，主要是从图像轮廓颜色入手，通过计算格子中某颜色像素点占比而确定格子的处理放式
-
     for i in range(row):
         for j in range(col):
             pixel_image = reimage[int(i * pixel) : int((i + 1) * pixel), int(j * pixel) : int((j + 1) * pixel)]
