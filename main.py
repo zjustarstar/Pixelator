@@ -3,7 +3,7 @@ import pixelator_grid as pl
 import glob
 import os
 
-input_path = "F:\\PythonProj\\Pixelator\\testpic\\binary_2\\"
+input_path = "F:\\PythonProj\\Pixelator\\testpic\\b2\\"
 output_folder = "result\\"
 
 outH = int(input('请输入目标输出高 H 的分辨率：'))

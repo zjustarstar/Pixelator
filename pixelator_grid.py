@@ -128,6 +128,8 @@ def process001(img, outH, outW): #对轮廓区域进行处理
                 pixel_image[:,:]= 0
                 final_pixelImg[i, j] = 0
 
+    # 转为RGB格式，方便在其它程序中使用;
+    final_pixelImg = cv2.cvtColor(final_pixelImg, cv2.COLOR_GRAY2BGR)
     return reimage, final_pixelImg
 
 
