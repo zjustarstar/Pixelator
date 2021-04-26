@@ -5,17 +5,6 @@ import pixel_one as pl
 import glob
 import os
 
-input_path = "F:\\PythonProj\\Pixelator\\testpic\\test\\"
-# input_path = "D:\\project_paper\\process\\0407001\\"
-output_folder = "result\\"
-
-outH = int(input('请输入目标输出高 H 的分辨率：'))
-outW = int(input('请输入目标输出宽 W 的分辨率：'))
-
-# 在当前目录自动生成用于保存的文件夹
-if not os.path.exists(input_path+output_folder):
-    os.makedirs(input_path+output_folder)
-
 
 # 对像素画中的每个像素放到scale倍
 def scale_pixel_image(pixel_image, scale):
@@ -28,6 +17,17 @@ def scale_pixel_image(pixel_image, scale):
 
     return new_pixelImg
 
+
+input_path = "F:\\PythonProj\\Pixelator\\testpic\\test\\"
+# input_path = "D:\\project_paper\\process\\0407001\\"
+output_folder = "result\\"
+
+outH = int(input('请输入目标输出高 H 的分辨率：'))
+outW = int(input('请输入目标输出宽 W 的分辨率：'))
+
+# 在当前目录自动生成用于保存的文件夹
+if not os.path.exists(input_path+output_folder):
+    os.makedirs(input_path+output_folder)
 
 imgfile = glob.glob(input_path + "*.png")
 totalfile = len(imgfile)
@@ -57,6 +57,6 @@ for f in imgfile:
 
     # 对实际大小的像素画放大;
     scale = 5  # 放大倍数
-    scalefile = input_path + output_folder + shotname + "_" + str(h)*scale + "_" + str(w)*scale + extension
+    scalefile = input_path + output_folder + shotname + "_" + str(h*scale) + "_" + str(w*scale) + extension
     scaleimage = scale_pixel_image(pixel_img, scale)
     cv2.imwrite(scalefile, scaleimage)
