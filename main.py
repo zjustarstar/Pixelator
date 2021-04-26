@@ -1,9 +1,11 @@
 import cv2
-import pixelator_grid as pl
+from PIL import Image
+import pixel_one as pl
 import glob
 import os
 
 input_path = "F:\\PythonProj\\Pixelator\\testpic\\b2\\"
+# input_path = "D:\\project_paper\\process\\0407001\\"
 output_folder = "result\\"
 
 outH = int(input('请输入目标输出高 H 的分辨率：'))
@@ -19,12 +21,16 @@ i = 0
 for f in imgfile:
     i = i + 1
     img = cv2.imread(f)
+    image = Image.open(f)
     (filepath, filename) = os.path.split(f)
     (shotname, extension) = os.path.splitext(filename)
     print("当前正在处理 %d/%d :%s" % (i, totalfile, filename))
 
-    image01, pixel_img = pl.process001(img, outH, outW)
-    image02 = pl.process002(image01, outH, outW)
+    colors = pl.get_colors(image)
+    H = pl.get_colors_H(colors)
+    Y = pl.get_colors_Y(colors)
+    C_H_Y = pl.get_maincolors(colors, H, Y)
+    image01, pixel_img = pl.box_pixelation(img, C_H_Y, outW, outH)
 
     # 原图分辨率的像素图输出
     outfile = input_path + output_folder + filename
