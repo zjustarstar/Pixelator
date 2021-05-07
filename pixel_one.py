@@ -1,32 +1,42 @@
-from PIL import Image
-import numpy as np
 import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+from PIL import Image
+from collections import Counter
+import glob
 
-def get_colors(image):  #获得图片主要颜色
-    # image = Image.open(infile)
-    # reimage = image.resize((100,100))
+def get_colors(infile):  #获得图片颜色
+    image = Image.open(infile)
     result = image.convert("P", palette=Image.ADAPTIVE)
 
-    # 找到主要的颜色
     palette = result.getpalette()
     colors = list()
 
     color_counts = sorted(result.getcolors(), reverse=True)
-    if len(color_counts)>30:
-        for i in range(30):
-            palette_index = color_counts[i][1]
-            dominant_color = palette[palette_index * 3: palette_index * 3 + 3]
-            colors.append(tuple(dominant_color))
-    elif len(color_counts)<= 30:
-        for i in range(len(color_counts)):
-            palette_index = color_counts[i][1]
-            dominant_color = palette[palette_index * 3: palette_index * 3 + 3]
-            colors.append(tuple(dominant_color))
+    for i in range(len(color_counts)):
+        palette_index = color_counts[i][1]
+        dominant_color = palette[palette_index * 3: palette_index * 3 + 3]
+        colors.append(tuple(dominant_color))
 
-    return colors
+    main_colors = list()
+    thres = 15
+    for i, color in enumerate(colors):
+        flag = 0
+        if (main_colors != []):
+            for temp_color in main_colors:
+                if ((abs(color[0] - temp_color[0]) <= thres and abs(color[1] - temp_color[1]) <= thres)
+                        or (abs(color[1] - temp_color[1]) <= thres and abs(color[2] - temp_color[2]) <= thres)
+                        or (abs(color[0] - temp_color[0]) <= thres and abs(color[2] - temp_color[2]) <= thres)
+                        or (abs(color[0] - temp_color[0]) <= thres and abs(color[1] - temp_color[1]) <= thres
+                            and abs(color[2] - temp_color[2]) <= thres)):
+                    flag = 1
+        if (flag == 0):
+            main_colors.append(color)
 
-def get_colors_H(colors):
-    H = list()
+    return main_colors
+
+def get_colors_H(colors):#计算获得的颜色对应的色相（H值）
+    H=list()
     for i in range(len(colors)):
         r = colors[i][0]/255
         g = colors[i][1]/255
@@ -45,12 +55,12 @@ def get_colors_H(colors):
             h = ((b-r)/C) * 60 + 120
         elif Max == b:
             h = ((r-g)/C) * 60 +240
-        h0=h/2
+        h0 = h/2
         H.append(h0)
 
     return H
 
-def get_colors_Y(colors):
+def get_colors_Y(colors):#获得主要颜色对应的YUV中的Y值
     Y = list()
     for i in range(len(colors)):
         r = colors[i][0]
@@ -60,118 +70,20 @@ def get_colors_Y(colors):
         Y.append(y)
     return Y
 
-def get_maincolors(colors,H,Y):
-    H0=list()
-    C0=list()
-    Y0=list()
-    for i in range(len(H)):
-        if H[i] not in H0:
-            H0.append(H[i])
-            C0.append(colors[i])
-            Y0.append(Y[i])
-    color30 = list()
-    H30=list()
-    Y30=list()
-    color60 = list()
-    H60 = list()
-    Y60 = list()
-    color90 = list()
-    H90 = list()
-    Y90 = list()
-    color120 = list()
-    H120 = list()
-    Y120 = list()
-    color150 = list()
-    H150 = list()
-    Y150 = list()
-    color180 = list()
-    H180 = list()
-    Y180 = list()
-    color210 = list()
-    H210 = list()
-    Y210 = list()
-    color240 = list()
-    H240 = list()
-    Y240 = list()
-    color270 = list()
-    H270 = list()
-    Y270 = list()
-    color300 = list()
-    H300 = list()
-    Y300 = list()
-    color330 = list()
-    H330 = list()
-    Y330 = list()
-    color360 = list()
-    H360 = list()
-    Y360= list()
-    for j in range(len(H0)):
-        H1 = H0[j]
-        C1 = C0[j]
-        Y1 = Y0[j]
-        if 0 <= H1 <30:
-            color30.append(C1)
-            H30.append(H1)
-            Y30.append(Y1)
-        elif 30 <= H1 <60:
-            color60.append(C1)
-            H60.append(H1)
-            Y60.append(Y1)
-        elif 60 <= H1 <90:
-            color90.append(C1)
-            H90.append(H1)
-            Y90.append(Y1)
-        elif 90 <= H1 <120:
-            color120.append(C1)
-            H120.append(H1)
-            Y120.append(Y1)
-        elif 120 <= H1 <150:
-            color150.append(C1)
-            H150.append(H1)
-            Y150.append(Y1)
-        elif 150 <= H1 <180:
-            color180.append(C1)
-            H180.append(H1)
-            Y180.append(Y1)
-        elif 180 <= H1 <210:
-            color210.append(C1)
-            H210.append(H1)
-            Y210.append(Y1)
-        elif 210 <= H1 <240:
-            color240.append(C1)
-            H240.append(H1)
-            Y240.append(Y1)
-        elif 240 <= H1 <270:
-            color270.append(C1)
-            H270.append(H1)
-            Y270.append(Y1)
-        elif 270 <= H1 <300:
-            color300.append(C1)
-            H300.append(H1)
-            Y300.append(Y1)
-        elif 300 <= H1 <330:
-            color330.append(C1)
-            H330.append(H1)
-            Y330.append(Y1)
-        elif 330 <= H1 <360:
-            color360.append(C1)
-            H360.append(H1)
-            Y360.append(Y1)
-    Dcolors = (color30, color60, color90, color120, color150, color180, color210, color240, color270, color300, color330, color360)
-    maincolors = [x for x in Dcolors if x]
-    DH = (H30,H60,H90,H120,H150,H180,H210,H240,H270,H300,H330,H360)
-    mainH = [z for z in DH if z]
-    DY = (Y30,Y60,Y90,Y120,Y150,Y180,Y210,Y240,Y270,Y300,Y330,Y360)
-    mainY = [v for v in DY if v]
-    # colors_H_Y=(maincolors,mainH,mainY)
-    colors_H_Y=(Dcolors,DH,DY)
-    # print(maincolors)
-    # print(mainH)
-    # print(mainH)
+def get_CHY(colors,H,Y):
+    sorted_Y = sorted(enumerate(Y), key=lambda x: x[1])
+    idx_Y = [i[0] for i in sorted_Y]
+    Y = [i[1] for i in sorted_Y]
 
-    return colors_H_Y
+    sorted_colors = list()
+    sorted_H = list()
+    for idx in idx_Y:
+        sorted_colors.append(colors[idx])
+        sorted_H.append(H[idx])
+    CHY=(sorted_colors,sorted_H,Y)
+    return CHY
 
-def box_pixelation(image,colors_H_Y,outw,outh):
+def box_pixelation(image,CHY,outw,outh):#图片像素画处理
     h0 = image.shape[0]  # 高
     w0 = image.shape[1]  # 宽
     if h0 <= w0:
@@ -200,9 +112,6 @@ def box_pixelation(image,colors_H_Y,outw,outh):
     row = int(h / grid)
     col = int(w / grid)
 
-    # 用于保存最终的目标像素图
-    final_pixelImg = np.ones([row, col], np.uint8) * 255
-
     for i in range(row):
         for j in range(col):
             grid_image = reimage[i * grid:(i + 1) * grid, j * grid:(j + 1) * grid]
@@ -226,16 +135,16 @@ def box_pixelation(image,colors_H_Y,outw,outh):
                         G = pixel_G
                         R = pixel_R
 
-            R1 = R/255
-            G1 = G/255
-            B1 = B/255
+            R1 = R / 255
+            G1 = G / 255
+            B1 = B / 255
             Max = max(R1, G1, B1)
             Min = min(R1, G1, B1)
             C = Max - Min
             if C == 0:
                 h0 = 0
             elif Max == R1:
-                if G1>= B1:
+                if G1 >= B1:
                     h0 = ((G1 - B1) / C) * 60
                 else:
                     h0 = ((G1 - B1) / C) * 60 + 360
@@ -243,55 +152,72 @@ def box_pixelation(image,colors_H_Y,outw,outh):
                 h0 = ((B1 - R1) / C) * 60 + 120
             elif Max == B:
                 h0 = ((R1 - G1) / C) * 60 + 240
-            H = h0
+            H = h0 / 2
 
-            if R>200 and G>200 and B>200:
-                color=(255,255,255)
-            elif R==G==B>50:
-                color=(255,255,255)
-            elif R==G==B<=50:
-                color=(0,0,0)
+            main_colors = CHY[0]
+            main_H = CHY[1]
+            main_Y = CHY[2]
+            r_c0 = abs(main_colors[0][0] - R)
+            g_c0 = abs(main_colors[0][1] - G)
+            b_c0 = abs(main_colors[0][2] - B)
+
+            r_c1 = abs(main_colors[1][0] - R)
+            g_c1 = abs(main_colors[1][1] - G)
+            b_c1 = abs(main_colors[1][2] - B)
+
+            if R==G==B<50:
+                M_color = (0,0,0)
+            elif Y<= main_Y[1]:
+                if (r_c0<15 and g_c0<15) or (r_c0<15 and b_c0<15) or (g_c0<15 and b_c0<15):
+                    mcolor = main_colors[0]
+                # elif (r_c1<15 and g_c1<15) or (r_c1<15 and b_c1<15) or (g_c1<15 and b_c1<15):
+                #     mcolor = main_colors[1]
+                elif (r_c0 < r_c1 and g_c0 < g_c1) or (r_c0 < r_c1 and b_c0 < b_c1) or (g_c0 < g_c1 and b_c0 < b_c1)\
+                        or (r_c0 < r_c1 and g_c0 < g_c1 and b_c0 < b_c1):
+                    mcolor = main_colors[0]
+                # elif (r_c0 > r_c1 and g_c0 > g_c1) or (r_c0 > r_c1 and b_c0 > b_c1) or (g_c0 > g_c1 and b_c0 > b_c1) \
+                #         or (r_c0 > r_c1 and g_c0 > g_c1 and b_c0 > b_c1):
+                #     mcolor = main_colors[1]
+
+                else:
+                    continue
+                M_color = mcolor
+            # elif main_Y[0]< Y <= main_Y[1]:
+            #     if (r_c1<15 and g_c1<15) or (r_c1<15 and b_c1<15) or (g_c1<15 and b_c1<15):
+            #         mcolor = main_colors[1]
+            #     elif (r_c0<15 and g_c0<15) or (r_c0<15 and b_c0<15) or (g_c0<15 and b_c0<15):
+            #         mcolor = main_colors[0]
+            #     elif (r_c0 < r_c1 and g_c0 < g_c1) or (r_c0 < r_c1 and b_c0 < b_c1) or (g_c0 < g_c1 and b_c0 < b_c1)\
+            #             or (r_c0 < r_c1 and g_c0 < g_c1 and b_c0 < b_c1):
+            #         mcolor = main_colors[0]
+            #     elif (r_c0 > r_c1 and g_c0 > g_c1) or (r_c0 > r_c1 and b_c0 > b_c1) or (g_c0 > g_c1 and b_c0 > b_c1) \
+            #             or (r_c0 > r_c1 and g_c0 > g_c1 and b_c0 > b_c1):
+            #         mcolor = main_colors[1]
+            #     else:
+            #         continue
+            #     M_color=mcolor
             else:
-                color_one=colors_H_Y[0]
-                H_one=colors_H_Y[1]
-                Y_one=colors_H_Y[2]
+                continue
 
-
-                for x in range(12):
-                    if 30*x <= H <30*(x+1):
-                        s_one = x
-                if len(H_one[x])==0:
-                    color=(R,G,B)
-                elif len(H_one[x])!=0:
-                    color_two = color_one[s_one]
-                    H_two = H_one[s_one]
-                    Y_two = Y_one[s_one]
-
-                    Cmh_two=list()
-                    for z in range(len(H_two)):
-                        mh_two=abs(H_two[z] - H)
-                        Cmh_two.append(mh_two)
-                    for u in range(len(Cmh_two)):
-                        for v in range(len(Cmh_two)):
-                            if Cmh_two[u] ==Cmh_two[v]==min(Cmh_two) and u<=v and Y_two[u]<=Y_two[v]:
-                                s_two = u
-                            elif Cmh_two[u] ==Cmh_two[v]==min(Cmh_two) and u<=v and Y_two[u]>Y_two[v]:
-                                s_two = v
-                    color_three = color_two[s_two]
-                    color = color_three
-
-            main_R = color[0]
-            main_G = color[1]
-            main_B = color[2]
+            main_R = M_color[0]
+            main_G = M_color[1]
+            main_B = M_color[2]
 
             grid_image[:, :, 2] = main_R
             grid_image[:, :, 1] = main_G
             grid_image[:, :, 0] = main_B
+    return reimage
 
-            final_pixelImg[i, j] = color[0]
-
-    # 转为RGB格式，方便在其它程序中使用;
-    final_pixelImg = cv2.cvtColor(final_pixelImg, cv2.COLOR_GRAY2BGR)
-
-    return reimage, final_pixelImg
-
+# image_path = "D:\\project_paper\\process\\colors\\A010.png"
+# outw = 50
+# outh = 50
+#
+# img = cv2.imread("D:\\project_paper\\process\\0407001\\A010.jpg")
+# # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+# colors = get_colors(image_path )
+# H = get_colors_H(colors)
+# Y = get_colors_Y(colors)
+# CHY = get_CHY(colors,H,Y)
+# pixel_image = box_pixelation(img,CHY,outw,outh)
+#
+# cv2.imwrite("D:\\project_paper\\process\\0225process\\B010.png", pixel_image, [int(cv2.IMWRITE_PNG_COMPRESSION), 0])
